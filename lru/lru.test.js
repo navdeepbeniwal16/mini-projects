@@ -60,7 +60,7 @@ describe("put", () => {
     const cache = new LRUCache(3);
     cache.put("a", 1);
     expect(cache.get("a")).toBe(1);
-    expect(cache.occupancy).toBe(1);
+    expect(cache.mapping.size).toBe(1);
   });
 
   test("inserts multiple entries up to capacity", () => {
@@ -71,7 +71,7 @@ describe("put", () => {
     expect(cache.get("a")).toBe(1);
     expect(cache.get("b")).toBe(2);
     expect(cache.get("c")).toBe(3);
-    expect(cache.occupancy).toBe(3);
+    expect(cache.mapping.size).toBe(3);
   });
 
   test("updating an existing key changes its value", () => {
@@ -95,7 +95,7 @@ describe("put", () => {
     cache.put("a", 1);
     cache.put("b", 2);
     cache.put("a", 10);
-    expect(cache.occupancy).toBe(2);
+    expect(cache.mapping.size).toBe(2);
   });
 });
 
@@ -116,7 +116,7 @@ describe("eviction", () => {
     cache.put("b", 2);
     cache.put("c", 3);
     cache.put("d", 4); // evicts "a"
-    expect(cache.mapping["a"]).toBeUndefined();
+    expect(cache.mapping.has("a")).toBe(false);
   });
 
   test("get before put affects which entry is evicted", () => {
@@ -137,7 +137,7 @@ describe("eviction", () => {
     cache.put("b", 2);
     cache.put("c", 3);
     cache.put("d", 4);
-    expect(cache.occupancy).toBe(3);
+    expect(cache.mapping.size).toBe(3);
   });
 });
 

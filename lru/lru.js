@@ -1,7 +1,6 @@
 // LURCache
 export default class LRUCache {
   capacity = 5; // Default capacity
-  occupancy = 0;
   head = {
     key: null,
     value: null,
@@ -81,10 +80,9 @@ export default class LRUCache {
         next: null,
       };
 
-      if (this.occupancy < this.capacity) {
+      if (this.mapping.size < this.capacity) {
         // occupancy available - add new entry as MRU
         this._appendEntryAtTail(entry);
-        this.occupancy += 1;
       } else {
         // no occupancy available - remove lru, and add new entry as mru
         const removedEntry = this._removeEntry(this.head.next);
