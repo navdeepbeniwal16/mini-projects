@@ -1,6 +1,6 @@
 // LURCache
 export default class LRUCache {
-  capacity = 5; // Default capacity
+  DEFAULT_CAPACITY = 5;
   head = {
     key: null,
     value: null,
@@ -17,16 +17,9 @@ export default class LRUCache {
   mapping = new Map(); // key to entry object reference mapping
 
   constructor(capacity) {
-    if (capacity != null && capacity != undefined) {
-      this.capacity = capacity;
-    }
-
+    this.capacity = capacity != null ? capacity : this.DEFAULT_CAPACITY;
     this.head.next = this.tail;
     this.tail.prev = this.head;
-  }
-
-  getCapacity() {
-    return this.capacity;
   }
 
   _removeEntry(entry) {
@@ -97,14 +90,6 @@ export default class LRUCache {
 
   peek() {
     const lru = this.head.next;
-    console.log(`LRU: (${lru.key}, ${lru.value})`);
-  }
-
-  dllIterate() {
-    let ref = this.head.next;
-    while (ref != this.tail) {
-      console.log(`Key ${ref.key}, Value: ${ref.value}`);
-      ref = ref.next;
-    }
+    return lru;
   }
 }
