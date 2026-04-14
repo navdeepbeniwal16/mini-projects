@@ -1,4 +1,5 @@
-// LURCache
+// LRU Cache — O(1) get/put via doubly linked list + Map.
+// Recency order: head.next = LRU, tail.prev = MRU.
 export default class LRUCache {
   DEFAULT_CAPACITY = 5;
   head = {
@@ -6,15 +7,15 @@ export default class LRUCache {
     value: null,
     prev: null,
     next: null,
-  }; // head.next is the LRU (least recently used element)
+  };
   tail = {
     key: null,
     value: null,
     prev: null,
     next: null,
-  }; // tail.prev is the MRU (most recently used element)
+  };
 
-  mapping = new Map(); // key to entry object reference mapping
+  mapping = new Map();
 
   constructor(capacity) {
     this.capacity = capacity != null ? capacity : this.DEFAULT_CAPACITY;
@@ -60,12 +61,10 @@ export default class LRUCache {
   put(key, value) {
     const exists = this.mapping.has(key);
     if (exists) {
-      // entry already present
       const entryRef = this.mapping.get(key);
       entryRef.value = value;
       this._markRecentlyUsed(entryRef);
     } else {
-      // create a new entry
       const entry = {
         key: key,
         value: value,
@@ -73,18 +72,14 @@ export default class LRUCache {
         next: null,
       };
 
-      if (this.mapping.size < this.capacity) {
-        // occupancy available - add new entry as MRU
-        this._appendEntryAtTail(entry);
-      } else {
-        // no occupancy available - remove lru, and add new entry as mru
+      if (this.mapping.size >= this.capacity) {
+        // Evict LRU to make room
         const removedEntry = this._removeEntry(this.head.next);
-        this._appendEntryAtTail(entry);
-
-        this.mapping.delete(removedEntry.key); // remove removed entry from mapping
+        this.mapping.delete(removedEntry.key);
       }
 
-      this.mapping.set(key, entry); // update entry ref in mapping
+      this._appendEntryAtTail(entry);
+      this.mapping.set(key, entry);
     }
   }
 
