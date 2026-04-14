@@ -55,7 +55,8 @@ export default class LRUCache {
   }
 
   get(key) {
-    if (!this.mapping[key]) {
+    const exists = Object.hasOwn(this.mapping, key);
+    if (!exists) {
       return -1;
     }
 
@@ -65,7 +66,8 @@ export default class LRUCache {
   }
 
   put(key, value) {
-    if (this.mapping[key]) {
+    const exists = Object.hasOwn(this.mapping, key);
+    if (exists) {
       // entry already present
       const entryRef = this.mapping[key];
       entryRef.value = value;
