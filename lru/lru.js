@@ -15,7 +15,7 @@ export default class LRUCache {
     next: null,
   }; // tail.prev is the MRU (most recently used element)
 
-  mapping = {}; // key to entry object reference mapping
+  mapping = new Map(); // key to entry object reference mapping
 
   constructor(capacity) {
     if (capacity != null && capacity != undefined) {
@@ -55,21 +55,21 @@ export default class LRUCache {
   }
 
   get(key) {
-    const exists = Object.hasOwn(this.mapping, key);
+    const exists = this.mapping.has(key);
     if (!exists) {
       return -1;
     }
 
-    const entryRef = this.mapping[key];
+    const entryRef = this.mapping.get(key);
     this._markRecentlyUsed(entryRef);
     return entryRef.value;
   }
 
   put(key, value) {
-    const exists = Object.hasOwn(this.mapping, key);
+    const exists = this.mapping.has(key);
     if (exists) {
       // entry already present
-      const entryRef = this.mapping[key];
+      const entryRef = this.mapping.get(key);
       entryRef.value = value;
       this._markRecentlyUsed(entryRef);
     } else {
@@ -90,10 +90,10 @@ export default class LRUCache {
         const removedEntry = this._removeEntry(this.head.next);
         this._appendEntryAtTail(entry);
 
-        delete this.mapping[removedEntry.key]; // remove removed entry from mapping
+        this.mapping.delete(removedEntry.key); // remove removed entry from mapping
       }
 
-      this.mapping[key] = entry; // update entry ref in mapping
+      this.mapping.set(key, entry); // update entry ref in mapping
     }
   }
 
